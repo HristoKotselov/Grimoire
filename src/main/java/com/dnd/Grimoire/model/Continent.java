@@ -1,24 +1,25 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@javax.persistence.Entity
+@Entity
 @Table(name = "continent")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"regions", "plane"}, callSuper = true)
+@ToString(exclude = {"regions", "plane"}, callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class Continent extends Entity {
+@PrimaryKeyJoinColumn(name = "continent_id")
+public class Continent extends BaseEntity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-
-    @OneToMany(mappedBy="continent")
+    @OneToMany(mappedBy="continent", cascade = CascadeType.ALL)
     private List<Region> regions;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="plane_id", nullable=false)
     private Plane plane;
 }

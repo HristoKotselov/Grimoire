@@ -1,23 +1,38 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.persistence.Entity;
+import java.util.List;
 
+@Entity
+@Table(name = "tag")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"pcs", "baseEntities"})
+@ToString(exclude = {"pcs", "baseEntities"})
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Tag {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "tag_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long tagId;
 
-    @Column(name = "tag")
-    private String tag;
+    @Column(name = "tag_name")
+    private String tagName;
 
-    @Column(name = "visibility")
-    private Visibility visibility;
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    private List<Pc> pcs;
+
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    private List<BaseEntity> baseEntities;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tag_visibility",
+            joinColumns = @JoinColumn(name = "tag_id"),
+            inverseJoinColumns = @JoinColumn(name = "visibility_id"))
+    private List<Visibility> visibilities;
 }

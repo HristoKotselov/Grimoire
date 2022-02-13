@@ -6,23 +6,22 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "gender")
+@Table(name = "race")
 @Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = {"pc", "npc", "visibilities"})
 @ToString(exclude = {"pc", "npc", "visibilities"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Gender {
+public class Race {
 
     @Id
-    @Column(name = "gender_id")
+    @Column(name = "race_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long genderId;
+    private Long raceId;
 
-    @Column(name = "gender_type")
-    @Enumerated(EnumType.STRING)
-    private GenderType genderType;
+    @Column(name = "race_name")
+    private String raceName;
 
     @OneToOne(mappedBy = "race")
     private Pc pc;

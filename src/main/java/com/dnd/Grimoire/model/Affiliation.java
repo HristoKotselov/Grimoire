@@ -1,26 +1,34 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
-@javax.persistence.Entity
+@Entity
 @Table(name = "affiliation")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"visibilities", "npcs"})
+@ToString(exclude = {"visibilities", "npcs"})
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Affiliation {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "affiliation_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long affiliationId;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "visibility")
-    private Visibility visibility;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "affiliation_visibility",
+            joinColumns = @JoinColumn(name = "affiliation_id"),
+            inverseJoinColumns = @JoinColumn(name = "visibility_id"))
+    private List<Visibility> visibilities;
 
-    @ManyToOne
-    @JoinColumn(name="npc_id", nullable=false)
-    private Npc npc;
+    @ManyToMany(mappedBy = "affiliations", fetch = FetchType.LAZY)
+    private List<Npc> npcs;
 }

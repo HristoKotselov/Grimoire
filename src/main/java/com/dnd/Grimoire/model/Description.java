@@ -1,21 +1,41 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.persistence.Entity;
+import java.util.List;
 
+@Entity
+@Table(name = "description")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"descriptionText", "visibilities"})
+@ToString(exclude = {"descriptionText", "visibilities"})
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Description {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "description_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long descriptionId;
 
-    private Pc owner;
-    private String text;
-    private Visibility visibility;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "base_entity_id", nullable = false)
+    private BaseEntity baseEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable=false)
+    private Account owner;
+
+    @Lob
+    @Column(name = "description_text")
+    private String descriptionText;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "description_visibility",
+            joinColumns = @JoinColumn(name = "description_id"),
+            inverseJoinColumns = @JoinColumn(name = "visibility_id"))
+    private List<Visibility> visibilities;
 }
