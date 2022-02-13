@@ -1,6 +1,6 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -8,21 +8,26 @@ import java.util.List;
 
 @Entity
 @Table(name = "campaign")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"owner", "entities"})
+@ToString(exclude = {"owner", "entities"})
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Campaign {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "campaign_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long campaignId;
 
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="owner_id", nullable=false)
-    private User owner;
+    private Account owner;
 
-    @OneToMany(mappedBy="campaign")
-    private List<Pc> players;
+    @OneToMany(mappedBy="campaign", fetch = FetchType.LAZY)
+    private List<BaseEntity> entities;
 }

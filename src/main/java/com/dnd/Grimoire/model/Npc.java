@@ -1,38 +1,38 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@javax.persistence.Entity
+@Entity
 @Table(name = "npc")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"race", "gender", "aliases", "locations", "affiliations"}, callSuper = true)
+@ToString(exclude = {"race", "gender", "aliases", "locations", "affiliations"}, callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class Npc extends Entity {
+@PrimaryKeyJoinColumn(name = "npc_id")
+public class Npc extends BaseEntity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "race_id")
+    private Race race;
 
-    @Column(name = "race")
-    private String race;
-
-    @Column(name = "race_visibility")
-    private Visibility raceVisibility;
-
-    @Column(name = "gender")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gender_id")
     private Gender gender;
 
-    @Column(name = "gender_visibility")
-    private Visibility genderVisibility;
-
-    @OneToMany(mappedBy="npc")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Alias> aliases;
 
-    @OneToMany(mappedBy="npc")
-    private List<Affiliation> affiliations;
-
-    @OneToMany(mappedBy="npc")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Location> locations;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "npc_affiliation",
+            joinColumns = @JoinColumn(name = "npc_id"),
+            inverseJoinColumns = @JoinColumn(name = "affiliation_id"))
+    private List<Affiliation> affiliations;
 }

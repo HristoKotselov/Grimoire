@@ -1,31 +1,34 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@javax.persistence.Entity
+@Entity
 @Table(name = "item")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"itemType", "rarity", "attunement", "itemValue"}, callSuper = true)
+@ToString(exclude = {"itemType", "rarity", "attunement", "itemValue"}, callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class Item extends Entity {
-
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+@PrimaryKeyJoinColumn(name = "item_id")
+public class Item extends BaseEntity {
 
     @Column(name = "item_type")
+    @Enumerated(EnumType.STRING)
     private ItemType itemType;
 
-    @Column(name = "rarity")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rarity_id")
     private Rarity rarity;
 
-    @Column(name = "rarity_visibility")
-    private Visibility rarityVisibility;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attunement_id")
+    private Attunement attunement;
 
-    @Column(name = "attunement")
-    private boolean attunement;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_value_id")
+    private ItemValue itemValue;
 
-    @Column(name = "value")
-    private String value;
 }

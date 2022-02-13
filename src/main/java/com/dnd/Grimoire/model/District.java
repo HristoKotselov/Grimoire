@@ -1,24 +1,25 @@
 package com.dnd.Grimoire.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@javax.persistence.Entity
+@Entity
 @Table(name = "district")
+@Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = {"places", "settlement"}, callSuper = true)
+@ToString(exclude = {"places", "settlement"}, callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class District extends Entity {
+@PrimaryKeyJoinColumn(name = "district_id")
+public class District extends BaseEntity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-
-    @OneToMany(mappedBy="district")
+    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<Place> places;
 
-    @ManyToOne
-    @JoinColumn(name="settlement_id", nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "settlement_id", nullable=false)
     private Settlement settlement;
 }
