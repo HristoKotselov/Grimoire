@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@PrimaryKeyJoinColumn(name = "settlement_id")
 public class Settlement extends BaseEntity {
 
     @OneToMany(mappedBy="settlement", cascade = CascadeType.ALL)

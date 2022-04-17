@@ -12,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@PrimaryKeyJoinColumn(name = "place_id")
 public class Place extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
