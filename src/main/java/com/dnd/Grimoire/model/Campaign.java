@@ -29,5 +29,8 @@ public class Campaign {
     private Account owner;
 
     @OneToMany(mappedBy="campaign", fetch = FetchType.LAZY)
+    private List<Pc> pcs;
+
+    @OneToMany(mappedBy="campaign", fetch = FetchType.LAZY)
     private List<BaseEntity> entities;
 }

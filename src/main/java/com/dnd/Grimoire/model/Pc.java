@@ -8,8 +8,8 @@ import java.util.List;
 @Entity
 @Table(name = "pc")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"race", "gender", "heroClass", "tags", "pictures"})
-@ToString(exclude = {"race", "gender", "heroClass", "tags", "pictures"})
+@EqualsAndHashCode(exclude = {"race", "gender", "heroClass", "pictures", "tags", "descriptions"})
+@ToString(exclude = {"race", "gender", "heroClass", "pictures", "tags", "descriptions"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -22,7 +22,11 @@ public class Pc {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="account_id", nullable=false)
-    private Account account;
+    private Account owner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="campaign_id", nullable=false)
+    private Campaign campaign;
 
     @Column(name = "name")
     private String name;
@@ -39,32 +43,18 @@ public class Pc {
     private String heroClass;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "pc_picture",
+            joinColumns = @JoinColumn(name = "pc_id"),
+            inverseJoinColumns = @JoinColumn(name = "picture_id"))
+    private List<Picture> pictures;
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "pc_tag",
             joinColumns = @JoinColumn(name = "pc_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "base_entity_picture",
-            joinColumns = @JoinColumn(name = "base_entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "picture_id"))
-    private List<Picture> pictures;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Description> descriptions;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "visibility_id")
-    private Visibility owningVisibility;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "pc_visibility",
-            joinColumns = @JoinColumn(name = "pc_id"),
-            inverseJoinColumns = @JoinColumn(name = "visibility_id"))
-    private List<Visibility> visibilities;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="campaign_id", nullable=false)
-    private Campaign campaign;
+    @OneToMany(mappedBy = "pc", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PcDescription> descriptions;
 
 }

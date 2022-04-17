@@ -8,8 +8,8 @@ import java.util.List;
 @Entity
 @Table(name = "attunement")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"required", "item", "visibilities"})
-@ToString(exclude = {"required", "item", "visibilities"})
+@EqualsAndHashCode(exclude = {"required", "visibilities"})
+@ToString(exclude = {"required", "visibilities"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -22,9 +22,6 @@ public class Attunement {
 
     @Column(name = "required")
     private boolean required;
-
-    @OneToOne(mappedBy = "attunement")
-    private Item item;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "attument_visibility",

@@ -9,8 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "tag")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"pcs", "baseEntities"})
-@ToString(exclude = {"pcs", "baseEntities"})
+@EqualsAndHashCode(exclude = {"name", "pcs", "baseEntities", "visibility"})
+@ToString(exclude = {"name", "pcs", "baseEntities", "visibility"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -21,8 +21,8 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long tagId;
 
-    @Column(name = "tag_name")
-    private String tagName;
+    @Column(name = "name")
+    private String name;
 
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private List<Pc> pcs;
@@ -30,9 +30,10 @@ public class Tag {
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private List<BaseEntity> baseEntities;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tag_visibility",
-            joinColumns = @JoinColumn(name = "tag_id"),
-            inverseJoinColumns = @JoinColumn(name = "visibility_id"))
-    private List<Visibility> visibilities;
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    private List<Picture> pictures;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "visibility_id")
+    private Visibility visibility;
 }

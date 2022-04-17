@@ -9,8 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "account")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"pcs", "campaigns", "password"})
-@ToString(exclude = {"pcs", "campaigns", "password"})
+@EqualsAndHashCode(exclude = {"password", "pcs", "campaigns"})
+@ToString(exclude = {"password", "pcs", "campaigns"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -27,7 +27,7 @@ public class Account {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Pc> pcs;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
