@@ -9,8 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "location")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"visibilities", "npc", "monster"})
-@ToString(exclude = {"visibilities", "npc", "monster"})
+@EqualsAndHashCode(exclude = {"visibilities", "npcs", "monsters"})
+@ToString(exclude = {"visibilities", "npcs", "monsters"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -30,11 +30,9 @@ public class Location {
             inverseJoinColumns = @JoinColumn(name = "visibility_id"))
     private List<Visibility> visibilities;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "npc_id", nullable=false)
-    private Npc npc;
+    @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
+    private List<Npc> npcs;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "monster_id", nullable=false)
-    private Monster monster;
+    @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
+    private List<Monster> monsters;
 }

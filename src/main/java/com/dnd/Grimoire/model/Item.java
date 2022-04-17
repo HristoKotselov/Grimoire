@@ -3,6 +3,7 @@ package com.dnd.Grimoire.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "item")
@@ -12,7 +13,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@PrimaryKeyJoinColumn(name = "item_id")
 public class Item extends BaseEntity {
 
     @Column(name = "item_type")

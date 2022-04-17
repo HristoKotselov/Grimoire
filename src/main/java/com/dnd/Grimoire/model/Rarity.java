@@ -8,8 +8,8 @@ import java.util.List;
 @Entity
 @Table(name = "rarity")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"item", "visibilities"})
-@ToString(exclude = {"item", "visibilities"})
+@EqualsAndHashCode(exclude = {"visibilities"})
+@ToString(exclude = {"visibilities"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -23,9 +23,6 @@ public class Rarity {
     @Column(name = "rarity_type")
     @Enumerated(EnumType.STRING)
     private RarityType rarityType;
-
-    @OneToOne(mappedBy = "rarity")
-    private Item item;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "rarity_visibility",

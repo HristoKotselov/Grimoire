@@ -8,12 +8,11 @@ import java.util.List;
 @Entity
 @Table(name = "npc")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"race", "gender", "aliases", "locations", "affiliations"}, callSuper = true)
-@ToString(exclude = {"race", "gender", "aliases", "locations", "affiliations"}, callSuper = true)
+@EqualsAndHashCode(exclude = {"race", "gender", "locations", "affiliations"}, callSuper = true)
+@ToString(exclude = {"race", "gender", "locations", "affiliations"}, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@PrimaryKeyJoinColumn(name = "npc_id")
 public class Npc extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -24,10 +23,10 @@ public class Npc extends BaseEntity {
     @JoinColumn(name = "gender_id")
     private Gender gender;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Alias> aliases;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "npc_location",
+            joinColumns = @JoinColumn(name = "npc_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id"))
     private List<Location> locations;
 
     @ManyToMany(fetch = FetchType.LAZY)
