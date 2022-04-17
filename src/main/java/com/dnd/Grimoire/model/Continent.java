@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@PrimaryKeyJoinColumn(name = "continent_id")
 public class Continent extends BaseEntity {
 
     @OneToMany(mappedBy="continent", cascade = CascadeType.ALL)
