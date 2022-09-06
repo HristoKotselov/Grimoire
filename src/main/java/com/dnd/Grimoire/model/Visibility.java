@@ -1,9 +1,14 @@
 package com.dnd.Grimoire.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "visibility")
@@ -11,21 +16,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Visibility {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Visibility implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "visibility_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "visibility_seq")
     private Long visibilityId;
 
     @Column(name = "visibility_type")
     @Enumerated(EnumType.STRING)
     private VisibilityType visibilityType;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pc_id")
     private Pc owner;

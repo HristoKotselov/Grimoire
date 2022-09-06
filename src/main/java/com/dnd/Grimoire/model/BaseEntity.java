@@ -1,24 +1,54 @@
 package com.dnd.Grimoire.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"campaign", "tags", "pictures", "descriptions", "visibilities"})
-@ToString(exclude = {"campaign", "tags", "pictures", "descriptions", "visibilities"})
+@EqualsAndHashCode(exclude = {"campaign", "aliases", "tags", "pictures", "descriptions", "visibilities"})
+@ToString(exclude = {"campaign", "aliases", "tags", "pictures", "descriptions", "visibilities"})
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class BaseEntity {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Plane.class, name = "Plane"),
+        @JsonSubTypes.Type(value = Continent.class, name = "Continent"),
+        @JsonSubTypes.Type(value = Region.class, name = "Region"),
+        @JsonSubTypes.Type(value = Settlement.class, name = "Settlement"),
+        @JsonSubTypes.Type(value = District.class, name = "District"),
+        @JsonSubTypes.Type(value = Place.class, name = "Place"),
+        @JsonSubTypes.Type(value = Npc.class, name = "Npc"),
+        @JsonSubTypes.Type(value = Monster.class, name = "Monster"),
+        @JsonSubTypes.Type(value = Item.class, name = "Item"),
+        @JsonSubTypes.Type(value = Event.class, name = "Event") }
+)
+public abstract class BaseEntity implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "base_entity_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "sequenceIdGenerator")
+    @GenericGenerator(
+            name = "sequenceIdGenerator",
+            strategy = "sequence",
+            parameters = @Parameter(
+                    name = SequenceStyleGenerator.CONFIG_PREFER_SEQUENCE_PER_ENTITY,
+                    value = "true"))
     private Long baseEntityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,19 +58,19 @@ public abstract class BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @JsonManagedReference(value="baseEntity")
     @OneToMany(mappedBy = "baseEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Alias> aliases;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "baseEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EntityDescription> descriptions;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "base_entity_picture",
-            joinColumns = @JoinColumn(name = "base_entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "picture_id"))
+//    @JsonManagedReference(value="baseEntity")
+    @OneToMany(mappedBy = "baseEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Picture> pictures;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "base_entity_tag",
             joinColumns = @JoinColumn(name = "base_entity_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))

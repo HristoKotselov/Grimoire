@@ -3,6 +3,7 @@ package com.dnd.Grimoire.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,11 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Attunement {
+public class Attunement implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "attunement_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attunement_seq")
     private Long attunementId;
 
     @Column(name = "required")

@@ -3,6 +3,7 @@ package com.dnd.Grimoire.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,11 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Rarity {
+public class Rarity implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "rarity_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rarity_seq")
     private Long rarityId;
 
     @Column(name = "rarity_type")

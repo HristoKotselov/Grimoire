@@ -1,36 +1,49 @@
 package com.dnd.Grimoire.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "alias")
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"visibilities"})
-@ToString(exclude = {"visibilities"})
+@EqualsAndHashCode(exclude = {"pc", "baseEntity", "affiliation", "visibility"})
+@ToString(exclude = {"pc", "baseEntity", "affiliation", "visibility"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Alias {
+public class Alias implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "alias_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alias_seq")
     private Long aliasId;
 
     @Column(name = "name")
     private String name;
 
+    @JsonBackReference(value="pc")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pc_id")
+    private Pc pc;
+
+    @JsonBackReference(value="baseEntity")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_entity_id")
     private BaseEntity baseEntity;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "alias_visibility",
-            joinColumns = @JoinColumn(name = "alias_id"),
-            inverseJoinColumns = @JoinColumn(name = "visibility_id"))
-    private List<Visibility> visibilities;
+    @JsonBackReference(value="affiliation")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "affiliation_id")
+    private Affiliation affiliation;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "visibility_id")
+    private Visibility visibility;
 }
