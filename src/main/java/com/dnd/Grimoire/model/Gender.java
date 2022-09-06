@@ -3,6 +3,7 @@ package com.dnd.Grimoire.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,11 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Gender {
+public class Gender implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "gender_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gender_seq")
     private Long genderId;
 
     @Column(name = "gender_type")
@@ -25,7 +28,7 @@ public class Gender {
     private GenderType genderType;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "race_visibility",
+    @JoinTable(name = "gender_visibility",
             joinColumns = @JoinColumn(name = "race_id"),
             inverseJoinColumns = @JoinColumn(name = "visibility_id"))
     private List<Visibility> visibilities;

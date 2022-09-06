@@ -40,8 +40,8 @@ public class AccountController {
     @PostMapping("/create")
     public ResponseEntity<Account> createAccount(@RequestBody final Account account) {
         try {
-            accountService.createAccount(account);
-            return ResponseEntity.status(HttpStatus.OK).body(account);
+            Account createdAccount = accountService.createAccount(account);
+            return ResponseEntity.status(HttpStatus.OK).body(createdAccount);
         } catch (Exception e) {
             log.error("Adding account {} failed because {}", account, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

@@ -39,4 +39,8 @@ public class AccountService {
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
+
+    public Account getExistingAccount(Account account) {
+        return accountRepository.findByUsername(account.getUsername());
+    }
 }
